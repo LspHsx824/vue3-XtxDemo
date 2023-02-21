@@ -1,82 +1,129 @@
 import {
   createWebHashHistory,
-  createRouter
+  createRouter,
+  RouterView
 } from "vue-router";
 
-import Confirm from "@/components/library/Confirm"
+import Confirm from "@/components/library/Confirm";
 
-import Store from "@/store"
+import Store from "@/store";
+import {
+  h
+} from "vue";
 
 const LoginCallback = () => import("@/views/login/callback");
 const Cart = () => import("@/views/cart");
 
 const routes = [{
+  path: "/",
+  component: () => import("@/views/Layout"),
+  // 二级路由
+  children: [{
     path: "/",
-    component: () => import("@/views/Layout"),
+    name: "home",
+    component: () => import("@/views/home")
+  },
+  {
+    path: "/category/:id",
+    meta: {
+      "Category-type": "Top-Categories",
+    },
+    component: () => import("@/views/category"),
+  },
+  {
+    path: "/category/sub/:subId",
+    meta: {
+      "Category-type": "Sub-Categories",
+    },
+    component: () => import("@/views/category/sub.vue"),
+  },
+  {
+    path: "/product/:id",
+    component: () => import("@/views/goods"),
+    meta: {
+      type: "product",
+    },
+  },
+  {
+    path: "/cart",
+    component: Cart,
+  },
+  {
+    path: "/member/checkout",
+    meta: {
+      isAuth: true,
+    },
+    component: () => import("@/views/member/pay/checkout"),
+  },
+  {
+    path: "/member/pay",
+    name: "pay",
+    meta: {
+      isAuth: true,
+    },
+    component: () => import("@/views/member/pay"),
+  },
+  {
+    path: "/pay/callback",
+    name: "payResult",
+    meta: {
+      isAuth: true,
+    },
+    component: () => import("@/views/member/pay/pay-result"),
+  },
+  {
+    path: "/member",
+    meta: {
+      isAuth: true,
+    },
+    component: () => import("@/views/member/Layout"),
+    redirect: '/member/self',
     children: [{
-        path: "/",
-        name: "home",
-        component: () => import("@/views/home"),
+      path: '/member/self',
+      meta: {
+        isAuth: true,
+      },
+      component: () => import("@/views/member/home/self")
+    },
+    {
+      path: '/member/order',
+      meta: {
+        isAuth: true,
+      },
+      component: {
+        render: () => h(<RouterView />)  //形成嵌套路由关系
+      },
+      children: [{
+        path: '',
+        component: () => import("@/views/member/order")
       },
       {
-        path: "/category/:id",
+        path: '/member/order/:id',
         meta: {
-          "Category-type": "Top-Categories",
+          isAuth: true,
         },
-        component: () => import("@/views/category"),
-      },
-      {
-        path: "/category/sub/:subId",
-        meta: {
-          "Category-type": "Sub-Categories",
-        },
-        component: () => import("@/views/category/sub.vue"),
-      },
-      {
-        path: "/product/:id",
-        component: () => import("@/views/goods"),
-        meta: {
-          type: "product",
-        },
-      },
-      {
-        path: "/cart",
-        component: Cart,
-      }, {
-        path: '/member/checkout',
-        meta: {
-          isAuth: true
-        },
-        component: () => import("@/views/member/pay/checkout")
-      }, {
-        path: '/member/pay',
-        name: 'pay',
-        meta: {
-          isAuth: true
-        },
-        component: () => import("@/views/member/pay")
-      }, {
-        path: '/pay/callback',
-        name: 'payResult',
-        meta: {
-          isAuth: true
-        },
-        component: () => import("@/views/member/pay/pay-result")
-      },
+        component: () => import("@/views/member/order/detail")
+      }
+      ]
+    },
+
     ],
   },
-  {
-    path: "/login",
-    name: 'login',
-    component: () => import("@/views/login"),
-  },
-  {
-    path: "/login/callback",
-    component: LoginCallback,
-  }, {
-    path: '/review', // 复习测试路由
-    component: () => import("@/views/text")
-  },
+  ],
+},
+{
+  path: "/login",
+  name: "login",
+  component: () => import("@/views/login"),
+},
+{
+  path: "/login/callback",
+  component: LoginCallback,
+},
+{
+  path: "/review", // 复习测试路由
+  component: () => import("@/views/text"),
+},
 ];
 
 const router = createRouter({
@@ -86,7 +133,7 @@ const router = createRouter({
     /**
      * !!延迟滚动，过程中可以处理 过渡动画
      */
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
           left: 0,
@@ -98,17 +145,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-
   const {
     profile
-  } = Store.state.user
+  } = Store.state.user;
 
   if (to.meta.isAuth && !profile.token) {
     //需要登录才能访问
-    return next("/login?returnUrl=" + encodeURIComponent(to.fullPath))
+    return next("/login?returnUrl=" + encodeURIComponent(to.fullPath));
   }
-  next()
-
-})
+  next();
+});
 
 export default router;

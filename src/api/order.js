@@ -54,3 +54,15 @@ export const findOrderDetail = (id) => {
         method: 'get',
     })
 }
+
+/**
+ * 模拟订单发货
+ * @param {String} id 
+ * @returns 
+ */
+export const orderShipping = id => {
+    return request({
+        url: `/member/order/consignment/${id}`,
+        method: 'get',
+    })
+}

@@ -25,7 +25,7 @@
                 </div>
             </div>
             <!-- 商品推荐 -->
-            <GoodsRelevant />
+            <GoodsRelevant :goodsId="goods_id"/>
             <!-- 商品详情 -->
             <div class="goods-footer">
                 <div class="goods-article">
@@ -164,6 +164,7 @@ const insertCart = () => {
     background: #fff;
     margin-top: 20px;
 }
+
 
 
 

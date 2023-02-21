@@ -4,7 +4,7 @@
             <ul>
                 <template v-if="userInfo.token">
                     <li>
-                        <a href="javascript:;">
+                        <a href="javascript:;" @click="toSelf">
                             <i class="iconfont icon-user"></i>
                             {{userInfo.account}}
                         </a>
@@ -64,13 +64,13 @@ export default {
             Store.commit("cart/setCart", []); //清空购物车
             Router.push("/login");
         };
-        const login = () => {
-            Router.push("/login");
-        };
+        const login = () => Router.push("/login");
+        const toSelf = () => Router.push("/member"); //个人中心
         return {
             userInfo,
             logout,
             login,
+            toSelf,
         };
     },
 };
@@ -107,7 +107,6 @@ export default {
         }
     }
 }
-
 
 
 

@@ -87,6 +87,7 @@ import { baseURL } from "@/utils/request";
 const $route = useRoute();
 const $router = useRouter();
 
+console.log($route.query);
 const orderId = $route.query?.id;
 
 const loading = ref(true);
@@ -232,5 +233,8 @@ const openPayModel = () => (visiblePayModel.value = true);
         }
     }
 }
+
+
+
 
 </style>

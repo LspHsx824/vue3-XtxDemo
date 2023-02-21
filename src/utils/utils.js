@@ -46,6 +46,7 @@ export const lockPageClose = () => {
 }
 
 let scrollbarWidth = ""
+
 function getScrollbarWidth() {
     var oP = document.createElement('p'),
         styles = {
@@ -114,6 +115,23 @@ export const checkField = (value, byteLength = 15) => {
 }
 
 
+
+/**
+ * 滚动到顶部 兼容性好
+ */
+export const scrollToTop = () => {
+    let sTop = document.documentElement.scrollTop || document.body.scrollTop
+    if (sTop > 0) {
+        window.requestAnimationFrame(scrollToTop)
+        window.scrollTo(0, sTop - sTop / 8)
+    }
+}
+
+// window.scrollTo({
+//     left: 0,
+//     top: 0,
+//     behavior: 'smooth'
+// })
 
 
 // function findscroller(element) {

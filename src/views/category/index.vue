@@ -42,8 +42,7 @@
     </div>
 </template>
 <script setup name="TopCategory">
-
-import { watch,ref,computed } from "vue";
+import { watch, ref, computed } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 import { findBanner } from "@/api/home";
@@ -167,8 +166,5 @@ watch(
         }
     }
 }
-
-
-
 
 </style>
