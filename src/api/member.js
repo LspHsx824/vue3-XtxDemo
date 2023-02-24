@@ -45,5 +45,7 @@ export const findOrderList = ({
             pageSize,
             orderState
         }
+    }, {
+        repeat_request_cancel: true
     })
 }

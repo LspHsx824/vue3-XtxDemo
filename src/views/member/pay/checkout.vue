@@ -5,20 +5,31 @@ import CartNone from "../../cart/components/cart-none";
 
 import { ref, reactive, watch } from "vue";
 
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 const $router = useRouter();
+
+const route = useRoute();
 
 import { useFetch } from "@/hooks/order";
 
-import { createOrder, findCheckoutInfo } from "@/api/order";
+import { createOrder, findCheckoutInfo, repurchaseOrder } from "@/api/order";
 import Message from "@/components/library/Message";
 import { awaitWrap } from "@/utils/utils";
 
 /**
  * 使用 use api 获取订单信息
+ * !无订单ID
+ * findCheckoutInfo 是根据购物车内容 生成订单
+ * !  如果已存在订单ID，===  --> 再次购买
+ * repurchaseOrder
  */
+
+// 根据是否已有订单 ID 决定 Api
+let Api = route.query.orderId ? repurchaseOrder : findCheckoutInfo;
+
 const { loading, data, error } = useFetch({
-    api: findCheckoutInfo,
+    api: Api,
+    params: route.query.orderId,
 });
 
 watch(
@@ -131,7 +142,6 @@ const submitOrderFn = async () => {
             <div class="wrapper" v-else>
                 <!-- 收货地址 -->
                 <!-- :addressList="data?.userAddresses" -->
-
                 <CheckoutAddress
                     @changeOrderAdsId="getOrderAdsId"
                     @changeAdsInfo="getAdsInfo"

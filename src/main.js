@@ -15,6 +15,6 @@ import 'normalize.css'
 import '@/assets/styles/common.less'
 
 // mockjs
-import '@/Mock'
+// import '@/Mock' //主要的原因是项目中使用mock.js，导致fs模块不能正常使用。
 
 createApp(App).use(plugin).use(store).use(router).mount('#app')

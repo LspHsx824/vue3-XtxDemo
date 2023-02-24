@@ -135,3 +135,19 @@ export const userAccountCheck = (account) => {
         }
     })
 }
+/**
+ * 校验用户是否存在
+ * @param {String} account - 帐号
+ * @returns promise
+ */
+export const updateAvatar = (data) => {
+    // multipart/form-data
+    return request({
+        url: 'http://pcapi-xiaotuxian-front-devtest.itheima.net/member/profile/avatar',
+        method: 'post',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        data,
+    })
+}

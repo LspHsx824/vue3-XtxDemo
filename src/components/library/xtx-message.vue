@@ -4,7 +4,7 @@
             <!-- 上面绑定的是样式 -->
             <!-- 不同提示图标会变 -->
             <i class="iconfont" :class="[style[type].icon]"></i>
-            <span class="text ">{{text}}</span>
+            <span class="text">{{text}}</span>
         </div>
     </Transition>
 </template>

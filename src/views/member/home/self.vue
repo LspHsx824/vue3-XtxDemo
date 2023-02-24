@@ -2,14 +2,15 @@
 import MemblePasnnel from "./components/membel-pannel.vue";
 import GoodsRelevan from "@/views/goods/components/goods-relevant.vue";
 import GoodsItem from "@/views/category/components/goods-item.vue";
+import Avatar from "./components/avatar.vue";
+
+// import NewImg from "./components/img-avatar.vue"
 
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
 import { findCollect } from "@/api/member";
 
 const store = useStore();
-// console.log(store.state.user.profile);
-
 const userInfo = computed(() => store.state.user.profile);
 
 /**
@@ -28,13 +29,49 @@ const collectList = ref([]);
 const movetList = ref([]);
 
 findCollect({ page: 1, pageSize: 4 }).then(({ result }) => {
-    console.log(result.items);
     collectList.value = result.items;
 });
-findCollect({ page: 1, pageSize: 4, }).then(({ result }) => {
-    console.log(result.items);
+findCollect({ page: 1, pageSize: 4 }).then(({ result }) => {
     movetList.value = result.items;
 });
+
+/**
+ * 修改头像
+ */
+const showAvatar = ref(false);
+
+// const fileTarget = ref(null);
+
+const open = () => {
+    showAvatar.value = true;
+};
+
+const url = ref("");
+const changeUrl = ({ base64 }) => {
+    // console.log(url.base64);
+    url.value = base64;
+};
+
+/**
+ * 测试取消重复请求
+ */
+import request from "@/utils/request";
+const sendReq = () => {
+    request(
+        {
+            url: "http://localhost:4000/data", // 测试数据本地服务器
+            method: "get",
+            params: {
+                num: 2,
+            },
+        },
+        {
+            repeat_request_cancel: true,
+        }
+    ).then((result) => {
+        console.log(result);
+    });
+};
 </script>
 <template>
     <div class="member-home">
@@ -43,10 +80,9 @@ findCollect({ page: 1, pageSize: 4, }).then(({ result }) => {
             <!-- 用户信息 -->
             <div class="user-meta">
                 <div class="avatar">
-                    <img :src="userInfo.avatar" />
+                    <img :src="userInfo.avatar" @click="open" />
                 </div>
                 <h4>徐菲菲</h4>
-                <!-- <h4>{{userInfo.nickname}}</h4> -->
             </div>
             <div class="item">
                 <a href="javascript:;">
@@ -63,6 +99,20 @@ findCollect({ page: 1, pageSize: 4, }).then(({ result }) => {
                 </a>
             </div>
         </div>
+        <!-- <NewImg></NewImg> -->
+        <Avatar
+            v-if="showAvatar"
+            :url="userInfo.avatar"
+            @exit="showAvatar=false"
+            @change-url="changeUrl"
+        />
+        <img :src="url" alt />
+
+        <!-- <br />
+        <br />
+        <XtxButton type="primary" @click="sendReq">多次请求数据</XtxButton>
+        <XtxButton type="plain">取消请求</XtxButton>-->
+
         <MemblePasnnel title="我的收藏">
             <GoodsItem v-for="item in collectList" :key="item.id" :goods="item" />
         </MemblePasnnel>
@@ -127,8 +177,6 @@ findCollect({ page: 1, pageSize: 4, }).then(({ result }) => {
 /deep/ .xtx-carousel .carousel-btn.next {
     right: 0;
 }
-
-
 
 
 </style>

@@ -11,6 +11,7 @@
     "@vueuse/core": "^9.6.0",
     "axios": "^1.2.1",
     "core-js": "^3.8.3",
+    "cropperjs": "^1.5.13",
     "dayjs": "^1.11.7",
     "file-loader": "^6.2.0",
     "less": "^4.1.3",

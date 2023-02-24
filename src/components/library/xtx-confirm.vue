@@ -117,6 +117,8 @@ export default {
         .body {
             padding: 20px 40px;
             font-size: 16px;
+            text-indent: -1.5em;
+            margin-left: 1.5em;
         }
         .footer {
             text-align: right;
@@ -147,9 +149,6 @@ export default {
         }
     }
 }
-
-
-
 
 
 

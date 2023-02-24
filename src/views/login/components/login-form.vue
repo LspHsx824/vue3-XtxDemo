@@ -229,10 +229,21 @@ const handleLoginInfo = (result) => {
     Store.dispatch("cart/mergeCart").then(() => {
         Message({ type: "success", text: "登录成功" });
         const path = Route.query.returnUrl || "/";
-        console.log("回调 URL：", path);
-        Router.push({
-            path,
-        });
+        console.log("回调 URL：");
+        // console.log(path);
+
+        /**
+         *  !http://www.corho.com:8080/#/member/checkout?orderId=1626973715147264002
+         *  !Router.push({
+                !path:path
+             });
+         *   !router 跳转注意点一:
+            当push 使用 Object 的时候， path中带有 query 路径参数 并不会被解析
+             跳转回省略 ？之后的所有参数
+         *   `解决办法，改变传参方式 直接
+            Router.push(path)
+         */
+        Router.push(path);
     });
 };
 

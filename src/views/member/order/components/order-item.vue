@@ -13,7 +13,12 @@
                         </b>
                     </span>
                 </template>
-                <a href="javascript:;" class="del" v-if="[5,6].includes(order.orderState)">删除</a>
+                <a
+                    href="javascript:;"
+                    class="del"
+                    v-if="[5,6].includes(order.orderState)"
+                    @click="deleteOrder(order)"
+                >删除</a>
             </div>
             <div class="body">
                 <div class="column goods">
@@ -35,7 +40,12 @@
                 </div>
                 <div class="column state">
                     <template v-if="order.orderState==2">
-                        <XtxButton :style="{width:'85px'}" @click="sellGoods(order.id)" type="primary" size="small">发货</XtxButton>
+                        <XtxButton
+                            :style="{width:'85px'}"
+                            @click="sellGoods(order.id)"
+                            type="primary"
+                            size="small"
+                        >发货</XtxButton>
                     </template>
                     <p>{{orderStatus[order.orderState].label}}</p>
                     <Info></Info>
@@ -54,7 +64,7 @@
                         >立即付款</XtxButton>
                     </template>
                     <template v-if="order.orderState===3">
-                        <XtxButton type="primary" size="small">确认收货</XtxButton>
+                        <XtxButton type="primary" size="small" @click="confirmGoods(order)">确认收货</XtxButton>
                     </template>
                     <p>
                         <a
@@ -63,10 +73,10 @@
                         >查看详情</a>
                     </p>
                     <p v-if="order.orderState===1">
-                        <a href="javascript:;">取消订单</a>
+                        <a href="javascript:;" @click="cancelorder(order)">取消订单</a>
                     </p>
                     <p v-if="[2,3,4,5].includes(order.orderState)">
-                        <a href="javascript:;">再次购买</a>
+                        <Router-link :to="`/member/checkout?orderId=${order.id}`">再次购买</Router-link>
                     </p>
                     <p v-if="[4,5].includes(order.orderState)">
                         <a href="javascript:;">申请售后</a>
@@ -82,20 +92,17 @@ import { usePayTime } from "@/hooks";
 import { defineComponent } from "vue";
 
 import { orderShipping } from "@/api/order";
+import { scrollToTop } from "@/utils/utils";
 import Message from "@/components/library/Message";
-
-const Emits = defineEmits(['sell-success'])
-
-
 
 /**
  * 模拟发货
  */
 const sellGoods = async (id) => {
     await orderShipping(id); // 订单状态错误
-    Emits('sell-success')
-    Message({type:'success',text:'商品已发货'})
-    scrollToTop()
+    Emits("sell-success");
+    Message({ type: "success", text: "商家已发货" });
+    scrollToTop();
 };
 
 const Props = defineProps({
@@ -104,8 +111,25 @@ const Props = defineProps({
         required: true,
     },
 });
+const Emits = defineEmits([
+    "sell-success",
+    "on-cancel",
+    "on-delete",
+    "on-confirm-order",
+]);
 
-
+//取消订单
+const cancelorder = (order) => {
+    Emits("on-cancel", order);
+};
+//删除订单
+const deleteOrder = (order) => {
+    Emits("on-delete", order);
+};
+//删除订单
+const confirmGoods = (order) => {
+    Emits("on-confirm-order", order);
+};
 
 const { start, timeTrxText } = usePayTime();
 
@@ -264,16 +288,5 @@ const Info = defineComponent({
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 </style>

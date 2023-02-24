@@ -11,6 +11,7 @@ export const useFetch = ({
     const data = ref(null)
     const error = ref(null)
 
+
     const fetch = async (params) => {
             loading.value = true
             try {
@@ -23,7 +24,7 @@ export const useFetch = ({
             }
         }
         // skip 是否跳过
-        !skip && fetch()
+        !skip && fetch(params)
 
     return {
         loading,

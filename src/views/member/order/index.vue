@@ -2,21 +2,22 @@
 <script setup name='MemberOrder'>
 import OrderItem from "./components/order-item.vue";
 import CartNone from "../../cart/components/cart-none";
+import OrderCancel from "./components/order-cancel.vue";
 
 import { reactive, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 
 import { orderStatus } from "@/api/constants";
 
 import { findOrderList } from "@/api/member";
-
-// import { useFetch } from "@/hooks/order"
+import { confirmOrder, deleteOrder } from "@/api/order";
+import Confirm from "@/components/library/Confirm";
+import Message from "@/components/library/Message";
 
 const loading = ref(true);
-const router = useRouter();
+// const router = useRouter();
 
 let activeName = ref("all");
-
 const orderList = ref([]);
 
 const changeData = (params) => {
@@ -27,8 +28,9 @@ const changeData = (params) => {
             orderList.value = result.items;
             total.value = result.counts;
         })
-        .catch(() => router.back())
-        .finally(() => (loading.value = false));
+        .catch((err) => {
+            loading.value = true;
+        });
 };
 
 /**
@@ -64,6 +66,41 @@ const pageChange = (currPage) => {
         behavior: "smooth",
     });
 };
+
+/**
+ * 取消订单
+ */
+
+const orderCancelComp = ref(null);
+const handlerCancel = (order) => {
+    orderCancelComp.value.open(order);
+};
+const handlerDelete = (order) => {
+    Confirm({ title: "删除订单", message: "确定要删除订单吗？" })
+        .then(async () => {
+            await deleteOrder([order.id]);
+            Message({ type: "success", text: "订单已成功删除！！！" });
+            changeData(requestParams);
+        })
+        .catch((err) => {});
+};
+
+const useConfirmOrder = () => {
+    const handlerConfirmOrder = (order) => {
+        // item 就是你要确认收货的订单
+        Confirm({ message: "您确认收到货吗？确认后货款将会打给卖家。" }).then(
+            async () => {
+                await confirmOrder(order.id);
+                Message({ text: "确认收货成功", type: "success" });
+                // 确认收货后状态变成 待评价
+                changeData(requestParams);
+            }
+        );
+    };
+    return { handlerConfirmOrder };
+};
+
+const { handlerConfirmOrder } = useConfirmOrder();
 </script>
  <template>
     <div class="MemberOrder">
@@ -95,6 +132,9 @@ const pageChange = (currPage) => {
                 :key="order.id"
                 :order="order"
                 @sell-success="changeData(requestParams)"
+                @on-cancel="handlerCancel"
+                @on-delete="handlerDelete"
+                @on-confirm-order="handlerConfirmOrder"
             ></OrderItem>
         </template>
         <!-- 分页组件 -->
@@ -105,6 +145,9 @@ const pageChange = (currPage) => {
                 :currentPage="requestParams.page"
             ></XtxPagination>
         </template>
+
+        <!-- 取消订单 Model -->
+        <OrderCancel ref="orderCancelComp"></OrderCancel>
     </div>
 </template>
 <style lang='less' scoped>

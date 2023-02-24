@@ -3,13 +3,26 @@
  */
 
 import request from "@/utils/request"
-
 export const findCheckoutInfo = () => {
     return request({
         url: '/member/order/pre',
         method: 'get',
     })
 }
+
+/**
+ * 再次购买--> 支付页--> 根据订单ID 查看商品是否全部有效 --> 生成新的订单信息
+ * @param {Number} orderId 
+ * @returns 
+ */
+export const repurchaseOrder = (orderId) => {
+    return request({
+        url: '/member/order/repurchase/' + orderId,
+        method: 'get',
+    })
+}
+
+
 
 /**
  * 
@@ -64,5 +77,54 @@ export const orderShipping = id => {
     return request({
         url: `/member/order/consignment/${id}`,
         method: 'get',
+    })
+}
+
+/**
+ * 取消订单
+ * @param {String} orderId - 订单ID
+ * @param {String} cancelReason - 取消原因
+ * @returns Promise
+ */
+export const cancelOrder = ({
+    orderId,
+    cancelReason
+}) => {
+    // return request(`/member/order/${orderId}/cancel`, 'put', { cancelReason })
+    return request({
+        url: `/member/order/${orderId}/cancel`,
+        method: 'put',
+        data: {
+            cancelReason
+        }
+    })
+}
+
+
+/**
+ * 删除订单
+ * @param {String} orderId - 订单ID
+ * @returns
+ */
+export const deleteOrder = (ids) => {
+    // return request('/member/order', 'delete', { ids: [orderId] })
+    return request({
+        url: `/member/order`,
+        method: 'delete',
+        data: {
+            ids
+        }
+    })
+}
+
+/**
+ * 确认收货
+ * @param {String} orderId - 订单ID
+ * @returns
+ */
+export const confirmOrder = (orderId) => {
+    return request({
+        url: `/member/order/${orderId}/receipt`,
+        method: 'put'
     })
 }

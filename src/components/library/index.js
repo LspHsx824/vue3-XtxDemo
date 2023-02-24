@@ -4,9 +4,9 @@
  */
 
 
-import {
-    handleSFCName
-} from "@/utils/utils"
+// import {
+//     handleSFCName
+// } from "@/utils/utils"
 
 import defaultImg from '@/assets/images/200.png'
 

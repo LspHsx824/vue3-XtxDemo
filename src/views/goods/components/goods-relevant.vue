@@ -19,7 +19,7 @@ import { ref } from "vue";
 
 const Props = defineProps({
     goodsId: {
-        required: true,
+        default:'',
     },
 });
 
@@ -106,6 +106,8 @@ console.log(sliders);
         }
     }
 }
+
+
 
 
 
